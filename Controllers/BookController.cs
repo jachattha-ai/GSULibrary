@@ -21,9 +21,14 @@ public class BookController : Controller
     [HttpPost]
     public IActionResult Add(GSUBook book)
     {
-        _context.Books.Add(book);
-        _context.SaveChanges();
-        return RedirectToAction("Index", "Home");
+        if (ModelState.IsValid)
+        {
+            _context.Books.Add(book);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View(book);
     }
 
     [HttpGet]
@@ -39,9 +44,14 @@ public class BookController : Controller
     [HttpPost]
     public IActionResult Edit(GSUBook book)
     {
-        _context.Books.Update(book);
-        _context.SaveChanges();
-        return RedirectToAction("Index", "Home");
+        if (ModelState.IsValid)
+        {
+            _context.Books.Update(book);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View(book);
     }
 
     // GET: confirm deletion
@@ -56,12 +66,13 @@ public class BookController : Controller
 
     // POST: confirmed deletion
     [HttpPost, ActionName("Delete")]
-    public IActionResult DeleteConfirmed(int id)
+    public IActionResult DeleteConfirmed(GSUBook book)
     {
-        var book = _context.Books.Find(id);
-        if (book != null)
+        var selectedBook = _context.Books.Find(book.GSUBookId);
+
+        if (selectedBook != null)
         {
-            _context.Books.Remove(book);
+            _context.Books.Remove(selectedBook);
             _context.SaveChanges();
         }
 
